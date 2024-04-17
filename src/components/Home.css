@@ -1,0 +1,17 @@
+.home-container {
+    display: flex;
+    justify-content: center;
+    column-gap: 1em;
+}
+
+.home-container .nav-item {
+    color: #ffffff;
+    padding: 1em 1.5em;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+
+.home-container .nav-item:hover {
+    background-color: #2e1649;
+}
