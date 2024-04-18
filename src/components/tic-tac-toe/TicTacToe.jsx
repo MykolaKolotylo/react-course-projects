@@ -9,6 +9,11 @@ import GameOver from "./components/GameOver.jsx";
 const PLAYER_1_SYMBOL = "X";
 const PLAYER_2_SYMBOL = "O";
 
+const PLAYERS = {
+    X: 'Player 1',
+    O: 'Player 2'
+}
+
 const initialGameBoard = [
     [null, null, null],
     [null, null, null],
@@ -25,12 +30,8 @@ const deriveActivePlayer = (gameTurns) => {
     return player;
 }
 
-export default function TicTacToe() {
-    const [gameTurns, setGameTurns] = useState([]);
-    const [players, setPlayers] = useState({[PLAYER_1_SYMBOL]: 'Player 1', [PLAYER_2_SYMBOL]: 'Player 2'});
-    const activePlayer = deriveActivePlayer(gameTurns);
+const deriveGameBoard = (gameTurns) => {
     let gameBoard = [...initialGameBoard.map(initialArr => [...initialArr])];
-    let winner;
 
     for (const turn of gameTurns) {
         const {square, player} = turn;
@@ -39,6 +40,11 @@ export default function TicTacToe() {
         gameBoard[row][col] = player;
     }
 
+    return gameBoard;
+}
+
+const getWinner = (gameBoard, players) => {
+    let winner;
     for (const comb of WINNING_COMBINATIONS) {
         let firstSymbol = gameBoard[comb[0].row][comb[0].column];
         let secondSymbol = gameBoard[comb[1].row][comb[1].column];
@@ -49,6 +55,18 @@ export default function TicTacToe() {
         }
     }
 
+    return winner;
+}
+
+export default function TicTacToe() {
+    const [gameTurns, setGameTurns] = useState([]);
+    const [players, setPlayers] = useState({
+        [PLAYER_1_SYMBOL]: PLAYERS[PLAYER_1_SYMBOL],
+        [PLAYER_2_SYMBOL]: PLAYERS[PLAYER_2_SYMBOL]
+    });
+    const activePlayer = deriveActivePlayer(gameTurns);
+    const gameBoard = deriveGameBoard(gameTurns);
+    const winner = getWinner(gameBoard, players);
     const hasDraw = gameTurns.length === 9 && !winner;
 
     const handleActivePlayer = (rowIdx, colIdx) => {
@@ -75,9 +93,9 @@ export default function TicTacToe() {
         <main className="tic-tac-toe-container">
             <div id="game-container">
                 <ol id="players" className="highlight-player">
-                    <Player name="Player 1" symbol={PLAYER_1_SYMBOL} isActive={activePlayer === PLAYER_1_SYMBOL}
+                    <Player name={PLAYERS.X} symbol={PLAYER_1_SYMBOL} isActive={activePlayer === PLAYER_1_SYMBOL}
                             onPlayersChange={handlePlayers}/>
-                    <Player name="Player 2" symbol={PLAYER_2_SYMBOL} isActive={activePlayer === PLAYER_2_SYMBOL}
+                    <Player name={PLAYERS.O} symbol={PLAYER_2_SYMBOL} isActive={activePlayer === PLAYER_2_SYMBOL}
                             onPlayersChange={handlePlayers}/>
                 </ol>
                 {(winner || hasDraw) && <GameOver winner={winner} onHandleRestart={handleRestart}/>}
